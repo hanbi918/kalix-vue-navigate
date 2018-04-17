@@ -31,6 +31,7 @@
 
 <script type="text/ecmascript-6">
   import Cache from '../common/cache'
+  import Vue from 'vue'
 
   export default {
     name: 'KalixNavigate',
@@ -115,7 +116,7 @@
                 this.treeData = response.data
                 if (this.treeData.length) {
                   this.treeData.forEach(function (e, i) {
-                    // Vue.set(e, 'isShow', false)
+                    Vue.set(e, 'isShow', false)
                   })
                   treeListData[this.currApp] = this.treeData
                   treeListData.createDate = nowDate.getTime()
@@ -145,6 +146,7 @@
         return e
       },
       showTree(e) {
+        // console.log()
         this.clickedNode = e
         this.treeData.forEach((item) => {
           if (item !== e) {

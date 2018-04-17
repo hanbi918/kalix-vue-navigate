@@ -44,8 +44,15 @@
     name: 'KalixHeader',
     data() {
       return {
+        userName: '',
         menuList: [],
-        themeValue: ''
+        singleLogin: true,
+        themeValue: '',
+        msgCount: 0,
+        menuIsOpen: false,
+        isShowAsideBtn: false,
+        isShowMessage: false,
+        isFlowCommand: false
       }
     },
     props: {
@@ -72,10 +79,15 @@
     mounted() {
       console.log('KalixHeader mounted')
       this.initMenu()
+      window.onresize = () => {
+        this._setAsideBtn()
+      }
     },
     activated() {
-      console.log('KalixHeader activated')
-      this.initMenu()
+      this.userName = Cache.get('user_name')
+      if (this.singleLogin) {
+        this.checkLogin()
+      }
     },
     methods: {
       initMenu() {
@@ -156,6 +168,37 @@
             this.doLogout()
             break
         }
+      },
+      checkLogin() {
+        clearInterval(this.islogin)
+        this.islogin = setInterval(() => {
+          let lastLoginTime = Cache._getLocal('lastLoginTime')
+          let sessionLatLoginTime = Cache.get('lastLoginTime')
+          if (lastLoginTime !== null && sessionLatLoginTime !== lastLoginTime) {
+            clearInterval(this.islogin)
+            this.doLogout()
+          }
+        }, 3000)
+      },
+      styleObject() {
+        console.log('this.formModel1', this.icon)
+        let style = {}
+        if (this.icon) {
+          style = {
+            backgroundImage: `url('${this.icon}')`
+          }
+        }
+        return style
+      },
+      // 展开导航按钮
+      onOpenMenu(flag) {
+        this.isShowAsideBtn && (this.menuIsOpen = flag)
+      },
+      // 计算 ulMenu 高度，决定 menu 是否带有展开功能
+      _setAsideBtn() {
+        setTimeout(() => {
+          this.isShowAsideBtn = (this.$refs.ulMenu.clientHeight > 64)
+        }, 20)
       }
     }
   }
