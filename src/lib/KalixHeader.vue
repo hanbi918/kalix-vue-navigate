@@ -85,6 +85,7 @@
     },
     activated() {
       this.userName = Cache.get('user_name')
+      this.initMenu()
       if (this.singleLogin) {
         this.checkLogin()
       }
