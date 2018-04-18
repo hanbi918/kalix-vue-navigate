@@ -31,7 +31,6 @@
 
 <script type="text/ecmascript-6">
   import Cache from '../common/cache'
-  import Vue from 'vue'
 
   export default {
     name: 'KalixNavigate',
@@ -75,21 +74,9 @@
     methods: {
       fetchData() {
         this.treeData = []
-        console.log('this.$route:', this.$route)
-        console.log('this.$route.params.app:', this.$route.params.app)
         if (this.$route.name === 'login') {
           return
         }
-        /*if (!appId) {
-          console.log('999 ', appId)
-          let toolListData = JSON.parse(Cache.get('toolListData'))
-          if (!toolListData) {
-            return
-          }
-          console.log('9990 ', appId)
-          appId = toolListData[0].id
-          console.log('9991 ', appId)
-        }*/
         let d = new Date()
         let cd = d.getTime()
         let treeListData = {}
@@ -115,8 +102,8 @@
               if (response.data && response.data.code !== 401) {
                 this.treeData = response.data
                 if (this.treeData.length) {
-                  this.treeData.forEach(function (e, i) {
-                    Vue.set(e, 'isShow', false)
+                  this.treeData.forEach(e => {
+                    this.$set(e, 'isShow', false)
                   })
                   treeListData[this.currApp] = this.treeData
                   treeListData.createDate = nowDate.getTime()
@@ -129,7 +116,6 @@
         }
       },
       setItemShow() {
-//        let routeName = this.currApp + '/' + this.currFun
         let routeName = this.currFun.toLowerCase()
         this.treeData.forEach((item) => {
           item.isShow = false
@@ -146,7 +132,7 @@
         return e
       },
       showTree(e) {
-        // console.log()
+        console.log('KalixNavigate e:', e)
         this.clickedNode = e
         this.treeData.forEach((item) => {
           if (item !== e) {
