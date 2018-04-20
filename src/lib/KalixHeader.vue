@@ -78,7 +78,7 @@
     },
     mounted() {
       console.log('KalixHeader mounted')
-      this.initMenu()
+      // this.initMenu()
       window.onresize = () => {
         this._setAsideBtn()
       }
