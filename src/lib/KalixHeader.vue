@@ -4,13 +4,22 @@
       div.logo
         img(src="/static/images/logo_oa_horizontal.png")
       div.s-flex_item.s-flex.mn
+        label.s-check__label.link-btn(for="menuChk")
+          input.s-check(type="checkbox" id="menuChk"
+          v-on:change="menuChkChange" v-model="headerMenuChk")
+          i(v-bind:class="{'el-icon-d-arrow-left':!menuChk,'el-icon-d-arrow-right':menuChk}")
         div.s-flex_item
-          div.s-flex.menu-main
+          div.s-flex.menu-main(v-bind:class="{'open':menuIsOpen}" v-on:mouseover="onOpenMenu(true)"  v-on:mouseout="onOpenMenu(false)")
             ul.menu(ref="ulMenu")
               li(v-for="item in menuList")
                 router-link.link-btn(tag="div" v-bind:to="{path:'/'+item.id}")
                   i(:class="bindClass(item.iconCls)")
                   | {{item.text}}
+            div.aside-btn(v-if="isShowAsideBtn")
+              div.line
+              div.arrow
+                div.arrow-mn
+              div.line
         ul.aside
           li
             el-badge(v-if="msgCount > 0" v-bind:value="msgCount")
@@ -47,6 +56,7 @@
         userName: '',
         menuList: [],
         singleLogin: true,
+        headerMenuChk: this.menuChk,
         themeValue: '',
         msgCount: 0,
         menuIsOpen: false,
@@ -92,6 +102,7 @@
     },
     methods: {
       initMenu() {
+        console.log(' ++++++++++ Kalix - Header');
         let toolListData = {}
         if (Cache.get('toolListData')) {
           toolListData = JSON.parse(Cache.get('toolListData'))
@@ -100,6 +111,7 @@
         if (!isEmptyObject(toolListData)) {
           this.menuList = toolListData
           this._urlTransmit(toolListData)
+          this._setAsideBtn()
         } else {
           if (this.reqUrl.length) {
             this.$http.get(this.reqUrl, {
@@ -110,6 +122,7 @@
                 toolListData = response.data
                 this.menuList = toolListData
                 Cache.save('toolListData', JSON.stringify(toolListData))
+                this._setAsideBtn()
                 this._urlTransmit(toolListData)
               }
             })
@@ -191,6 +204,9 @@
         }
         return style
       },
+      menuChkChange() {
+        this.$KalixEventBus.$emit('HeaderOnSmall', this.headerMenuChk)
+      },
       // 展开导航按钮
       onOpenMenu(flag) {
         this.isShowAsideBtn && (this.menuIsOpen = flag)
@@ -198,6 +214,7 @@
       // 计算 ulMenu 高度，决定 menu 是否带有展开功能
       _setAsideBtn() {
         setTimeout(() => {
+          console.log(' ===== this.$refs.ulMenu.clientHeight ===== ', this.$refs.ulMenu.clientHeight)
           this.isShowAsideBtn = (this.$refs.ulMenu.clientHeight > 64)
         }, 20)
       }

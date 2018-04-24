@@ -42,9 +42,6 @@
       url: {
         type: String,
         default: ''
-      },
-      menuChk: {
-        default: false
       }
     },
     data() {
@@ -56,10 +53,14 @@
         obj: {'name': 'aa'},
         treeData: [],
         clickedNode: null,
-        flag: true
+        flag: true,
+        menuChk: false
       }
     },
     activated() {
+      this.$KalixEventBus.$on('HeaderOnSmall', (e) => {
+        this.menuChk = e
+      })
       this.fetchData()
     },
     mounted() {
