@@ -46,8 +46,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Cache from '../common/cache'
-  import {isEmptyObject} from '../common/util'
 
   export default {
     name: 'KalixHeader',
@@ -94,7 +92,7 @@
       }
     },
     activated() {
-      this.userName = Cache.get('user_name')
+      this.userName = this.$KalixCatch.get('user_name')
       this.initMenu()
       if (this.singleLogin) {
         this.checkLogin()
@@ -104,11 +102,11 @@
       initMenu() {
         console.log(' ++++++++++ Kalix - Header');
         let toolListData = {}
-        if (Cache.get('toolListData')) {
-          toolListData = JSON.parse(Cache.get('toolListData'))
+        if (this.$KalixCatch.get('toolListData')) {
+          toolListData = JSON.parse(this.$KalixCatch.get('toolListData'))
         }
         console.log('KalixSecondPage toolListData', toolListData)
-        if (!isEmptyObject(toolListData)) {
+        if (!this.$M_IsEmptyObject(toolListData)) {
           this.menuList = toolListData
           this._urlTransmit(toolListData)
           this._setAsideBtn()
@@ -121,7 +119,7 @@
                 console.log('[toolListData] data:', response.data)
                 toolListData = response.data
                 this.menuList = toolListData
-                Cache.save('toolListData', JSON.stringify(toolListData))
+                this.$KalixCatch.save('toolListData', JSON.stringify(toolListData))
                 this._setAsideBtn()
                 this._urlTransmit(toolListData)
               }
@@ -159,14 +157,14 @@
       doLogout() {
         this.$http.get(this.logoutUrl, {})
           .then(response => {
-            Cache.clear()
-            Cache._clearLocal()
+            this.$KalixCatch.clear()
+            this.$KalixCatch._clearLocal()
             this.$router.push({path: '/login'})
           })
           .catch(err => {
             console.log(' ===== err ===== ', err)
-            Cache.clear()
-            Cache._clearLocal()
+            this.$KalixCatch.clear()
+            this.$KalixCatch._clearLocal()
             this.$router.push({path: '/login'})
           })
       },
@@ -186,8 +184,8 @@
       checkLogin() {
         clearInterval(this.islogin)
         this.islogin = setInterval(() => {
-          let lastLoginTime = Cache._getLocal('lastLoginTime')
-          let sessionLatLoginTime = Cache.get('lastLoginTime')
+          let lastLoginTime = this.$KalixCatch._getLocal('lastLoginTime')
+          let sessionLatLoginTime = this.$KalixCatch.get('lastLoginTime')
           if (lastLoginTime !== null && sessionLatLoginTime !== lastLoginTime) {
             clearInterval(this.islogin)
             this.doLogout()

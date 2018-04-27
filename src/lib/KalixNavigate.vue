@@ -30,7 +30,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Cache from '../common/cache'
 
   export default {
     name: 'KalixNavigate',
@@ -83,8 +82,8 @@
         let treeListData = {}
         this.currApp = this.$route.params.app
         this.currFun = this.$route.params.fun || ''
-        if (Cache.get('treeListData')) {
-          treeListData = JSON.parse(Cache.get('treeListData'))
+        if (this.$KalixCatch.get('treeListData')) {
+          treeListData = JSON.parse(this.$KalixCatch.get('treeListData'))
         }
         if (treeListData.createDate && (treeListData.createDate - cd) < this.cacheTime && treeListData[this.currApp]) {
           this.treeData = treeListData[this.currApp]
@@ -109,7 +108,7 @@
                   treeListData[this.currApp] = this.treeData
                   treeListData.createDate = nowDate.getTime()
                   this.setItemShow()
-                  Cache.save('treeListData', JSON.stringify(treeListData))
+                  this.$KalixCatch.save('treeListData', JSON.stringify(treeListData))
                 }
               }
             })
@@ -148,7 +147,7 @@
       },
       selectItem(item) {
         this.$router.push({path: `/${this.currApp}/${item.routeId.split('/').pop()}`})
-        Cache.save('currentTreeListItem', JSON.stringify(item))
+        this.$KalixCatch.save('currentTreeListItem', JSON.stringify(item))
       },
       currentCls(item) {
         return item.routeId.split('/').pop().toLowerCase() === this.currFun.toLowerCase() ? 'active' : ''

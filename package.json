@@ -1,7 +1,7 @@
 {
   "name": "kalix-vue-navigate",
   "description": "A Vue component to kalix-navigate",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "juezhan <11991762@qq.com>",
   "private": false,
   "license": "MIT",
